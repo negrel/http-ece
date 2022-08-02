@@ -1,10 +1,15 @@
 # `http_ece` - HTTP Encrypted Content-Encoding for Deno & web browsers
 
-This library implement an encryptor and decryptor for HTTP Encrypted
-Content-Encoding.
+This library is an implementation of HTTP Encrypted Content-Encoding
+scheme([RFC 8188](https://datatracker.ietf.org/doc/html/rfc8188)).
 
-It implements HTTP ECE as specified in
-[RFC8188](https://datatracker.ietf.org/doc/html/rfc8188).
+## Implemented schemes
+
+This crate implements only the published Web Push Encryption scheme, and **not**
+the legacy scheme from earlier drafts.
+
+It does not support, and we have no plans to ever support, the obsoletes
+`aesgmc` and `aesgcm128` schemes from earlier drafts.
 
 ## :stars: Show your support
 
