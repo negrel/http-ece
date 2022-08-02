@@ -6,10 +6,11 @@ import {
   assertThrows,
 } from "https://deno.land/std@0.150.0/testing/asserts.ts";
 import * as bytes from "https://deno.land/std@0.150.0/bytes/mod.ts";
-import * as b64url from "https://deno.land/std@0.149.0/encoding/base64url.ts";
+import * as b64url from "https://deno.land/std@0.150.0/encoding/base64url.ts";
 
-import { DEFAULT_RECORD_SIZE, Header, RecordSizeError } from "./header.ts";
-import { Salt, SALT_LENGTH } from "./salt.ts";
+import { DEFAULT_RECORD_SIZE, SALT_LENGTH } from "./const.ts";
+import { Header, RecordSizeError } from "./header.ts";
+import { Salt } from "./salt.ts";
 
 Deno.test("Header/constructor/default", () => {
   const h = new Header({});
@@ -62,7 +63,7 @@ Deno.test("Header/toBytes", () => {
   const idlen = Uint8Array.of(h.idlen);
   assert(
     bytes.equals(
-      h.toBytes(),
+      new Uint8Array(h.toBytes()),
       bytes.concat(innerSalt, rs, idlen, h.keyid),
     ),
   );

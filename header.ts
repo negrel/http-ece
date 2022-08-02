@@ -1,18 +1,22 @@
-import * as b64url from "https://deno.land/std@0.149.0/encoding/base64url.ts";
-import * as b64 from "https://deno.land/std@0.149.0/encoding/base64.ts";
-import { Salt, SALT_LENGTH } from "./salt.ts";
-import { equalUint8Array } from "./utils.ts";
+import * as b64url from "https://deno.land/std@0.150.0/encoding/base64url.ts";
+import * as b64 from "https://deno.land/std@0.150.0/encoding/base64.ts";
+import * as bytes from "https://deno.land/std@0.150.0/bytes/equals.ts";
+import {
+  DEFAULT_RECORD_SIZE,
+  HEADER_LENGTH_MIN,
+  IDLEN_LENGTH,
+  RECORD_SIZE_MAX,
+  RECORD_SIZE_MIN,
+  RS_LENGTH,
+  SALT_LENGTH,
+} from "./const.ts";
+import { Salt } from "./salt.ts";
 
-export const IDLEN_LENGTH = 1;
-export const RS_LENGTH = 4;
-export const DEFAULT_RECORD_SIZE = 1024 * 64;
-const HEADER_MIN_LENGTH = SALT_LENGTH + RS_LENGTH + IDLEN_LENGTH;
-
-export const RECORD_SIZE_MIN = 18;
-export const RECORD_SIZE_MAX = 2 ** 36 - 31;
-
-export class RecordSizeError extends Error {}
-export class HeaderSizeError extends Error {}
+export interface HeaderOptions {
+  salt?: Salt;
+  rs?: number;
+  keyid?: Uint8Array;
+}
 
 export class Header {
   public readonly salt: Salt;
@@ -23,13 +27,19 @@ export class Header {
     return this.keyid.byteLength;
   }
 
+  public get byteLength(): number {
+    return HEADER_LENGTH_MIN + this.idlen;
+  }
+
   constructor(
-    { salt = new Salt(), rs = DEFAULT_RECORD_SIZE, keyid = new Uint8Array() },
+    {
+      salt = new Salt(),
+      rs = DEFAULT_RECORD_SIZE,
+      keyid = new Uint8Array(),
+    }: HeaderOptions,
   ) {
-    if (rs < 18 || rs > 2 ** 36 - 31) {
-      throw new RecordSizeError(
-        `record size must be comprise between ${RECORD_SIZE_MIN} and ${RECORD_SIZE_MAX}: got ${rs}`,
-      );
+    if (rs < RECORD_SIZE_MIN || rs > RECORD_SIZE_MAX) {
+      throw new RecordSizeError(rs);
     }
 
     this.salt = salt;
@@ -37,14 +47,12 @@ export class Header {
     this.keyid = keyid;
   }
 
-  public static fromBytes(bytes: Uint8Array): Header {
-    if (bytes.byteLength < HEADER_MIN_LENGTH) {
-      throw new HeaderSizeError(
-        `header block must be at least ${HEADER_MIN_LENGTH} byte long: got ${bytes.byteLength}`,
-      );
+  public static fromBytes(buf: ArrayBuffer): Header {
+    if (buf.byteLength < HEADER_LENGTH_MIN) {
+      throw new HeaderSizeError(buf);
     }
 
-    const dv = new DataView(bytes.buffer);
+    const dv = new DataView(buf);
 
     let cur = 0;
     const salt = dv.buffer.slice(0, SALT_LENGTH);
@@ -67,36 +75,52 @@ export class Header {
   }
 
   public static fromBase64(b: string): Header {
-    return Header.fromBytes(b64.decode(b));
+    return Header.fromBytes(b64.decode(b).buffer);
   }
 
   public static fromBase64Url(b: string): Header {
-    return Header.fromBytes(b64url.decode(b));
+    return Header.fromBytes(b64url.decode(b).buffer);
   }
 
-  public toBytes(): Uint8Array {
-    const bytes = new Uint8Array(HEADER_MIN_LENGTH + this.keyid.byteLength);
+  public toBytes(): ArrayBuffer {
+    const bytes = new Uint8Array(this.byteLength);
     const dv = new DataView(bytes.buffer);
 
     bytes.set(this.salt);
     dv.setUint32(SALT_LENGTH, this.rs);
-    dv.setUint8(SALT_LENGTH + 4, this.idlen);
-    bytes.set(this.keyid, SALT_LENGTH + IDLEN_LENGTH + 4);
+    dv.setUint8(SALT_LENGTH + RS_LENGTH, this.idlen);
+    bytes.set(this.keyid, SALT_LENGTH + RS_LENGTH + IDLEN_LENGTH);
 
-    return bytes;
+    return bytes.buffer;
   }
 
   public toBase64(): string {
-    return b64.encode(this.toBytes().buffer);
+    return b64.encode(this.toBytes());
   }
 
   public toBase64Url(): string {
-    return b64url.encode(this.toBytes().buffer);
+    return b64url.encode(this.toBytes());
   }
 
   public equals(other: Header): boolean {
-    return equalUint8Array(this.salt, other.salt) &&
+    return bytes.equalsNaive(this.salt, other.salt) &&
       this.rs === other.rs &&
-      equalUint8Array(this.keyid, other.keyid);
+      bytes.equalsNaive(this.keyid, other.keyid);
+  }
+}
+
+export class RecordSizeError extends Error {
+  constructor(rs: number) {
+    super(
+      `record size must be comprised between ${RECORD_SIZE_MIN} and ${RECORD_SIZE_MAX}: got ${rs}`,
+    );
+  }
+}
+
+export class HeaderSizeError extends Error {
+  constructor(bytes: ArrayBuffer) {
+    super(
+      `header block must be at least ${HEADER_LENGTH_MIN} byte long: got ${bytes.byteLength}`,
+    );
   }
 }

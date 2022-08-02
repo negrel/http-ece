@@ -1,6 +1,6 @@
 import * as bytes from "https://deno.land/std@0.150.0/bytes/mod.ts";
 
-export const SALT_LENGTH = 16;
+import { SALT_LENGTH } from "./const.ts";
 
 export class SaltLengthError extends Error {}
 

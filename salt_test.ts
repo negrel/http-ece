@@ -3,7 +3,8 @@ import {
   assertFalse,
   assertThrows,
 } from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import { Salt, SALT_LENGTH, SaltLengthError } from "./salt.ts";
+import { SALT_LENGTH } from "./const.ts";
+import { Salt, SaltLengthError } from "./salt.ts";
 
 Deno.test("Salt/constructor/default", () => {
   const salt = new Salt();
