@@ -2,6 +2,12 @@ import { TAG_LENGTH } from "./const.ts";
 import { Header } from "./header.ts";
 import { ECECrypto, ECECryptoOptions } from "./ece_crypto.ts";
 
+/**
+ * @param data is the buffer to encrypt or a RecordIterable.
+ * @param secret is the encryption secret
+ * @param options
+ * @returns encrypted data
+ */
 export async function encrypt(
   data: RecordIterable | ArrayBuffer,
   secret: ArrayBuffer,
@@ -14,7 +20,6 @@ export async function encrypt(
     : new WithPaddingRecordIterable(
       data as ArrayBuffer,
       crypto.header.rs,
-      1,
     );
 
   const header = crypto.header.toBytes();
@@ -36,10 +41,22 @@ export async function encrypt(
   return result.buffer;
 }
 
-export class Record extends ArrayBuffer {}
+/**
+ * PlainTextRecord define a single unencrypted record.
+ */
+export class PlainTextRecord extends ArrayBuffer {}
 
+/**
+ * RecordIterable splits input data into records ready
+ * to be encrypted.
+ * This interface exists mainly to support different padding
+ * strategy.
+ */
 export interface RecordIterable {
-  [Symbol.iterator](): Iterator<Record, Record>;
+  // Iterator of record.
+  [Symbol.iterator](): Iterator<PlainTextRecord, PlainTextRecord>;
+
+  // Total number of record
   readonly length: number;
 }
 
@@ -49,6 +66,9 @@ function isRecordIterable(obj: any): boolean {
     typeof (obj.length) === "number";
 }
 
+/**
+ * WithPaddingRecordIterable is a fixed padding RecordIterable.
+ */
 class WithPaddingRecordIterable implements RecordIterable {
   public readonly length: number;
   private readonly data: ArrayBuffer;
@@ -86,13 +106,15 @@ class WithPaddingRecordIterable implements RecordIterable {
     this.data = data;
   }
 
-  [Symbol.iterator](): Iterator<Record, Record, undefined> {
+  [Symbol.iterator](): Iterator<PlainTextRecord, PlainTextRecord, undefined> {
     let cursor = 0;
     let done = false;
-    let record: Record = null as unknown as Record;
+    let record: PlainTextRecord = null as unknown as PlainTextRecord;
 
     return {
-      next: (..._args: [] | [undefined]): IteratorResult<Record, Record> => {
+      next: (
+        ..._args: [] | [undefined]
+      ): IteratorResult<PlainTextRecord, PlainTextRecord> => {
         if (done) return { done: true, value: record };
 
         done = cursor + this.rs >= this.data.byteLength;
@@ -157,6 +179,12 @@ export function unpad(record: ArrayBuffer): ArrayBuffer {
   return record;
 }
 
+/**
+ * @param data is the encrypted data with the header block
+ * @param secret is the secret used to encrypt the data
+ * @param header an optional header if not part of data.
+ * @returns the decrypted data
+ */
 export async function decrypt(
   data: ArrayBuffer,
   secret: ArrayBuffer,
