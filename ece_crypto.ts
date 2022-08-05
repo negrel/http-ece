@@ -144,7 +144,6 @@ export class ECECrypto {
     seq: number,
     cek: CryptoKey,
   ): Promise<ArrayBuffer> {
-    // Then encrypt
     const crypted = await this.crypto.encrypt(
       {
         name: "AES-GCM",
