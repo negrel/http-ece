@@ -15,8 +15,8 @@ export async function encrypt(
 ): Promise<ArrayBuffer> {
   const crypto = new ECECrypto(secret, options || {});
 
-  const iterable = isRecordIterable(data)
-    ? data as RecordIterable
+  const iterable = data instanceof RecordIterable
+    ? data
     : new WithPaddingRecordIterable(
       data as ArrayBuffer,
       crypto.header.rs,
@@ -32,13 +32,13 @@ export async function encrypt(
   let cursor = header.byteLength;
   for (const record of iterable) {
     const crypted = await crypto.encryptRecord(record, i);
-
     result.set(new Uint8Array(crypted), cursor);
+
     cursor += crypted.byteLength;
     i++;
   }
 
-  return result.buffer;
+  return result.slice(0, cursor).buffer;
 }
 
 /**
@@ -60,16 +60,12 @@ export interface RecordIterable {
   readonly length: number;
 }
 
-// deno-lint-ignore no-explicit-any
-function isRecordIterable(obj: any): boolean {
-  return Symbol.iterator in obj && "length" in obj &&
-    typeof (obj.length) === "number";
-}
+export abstract class RecordIterable implements RecordIterable {}
 
 /**
  * WithPaddingRecordIterable is a fixed padding RecordIterable.
  */
-class WithPaddingRecordIterable implements RecordIterable {
+export class WithPaddingRecordIterable extends RecordIterable {
   public readonly length: number;
   private readonly data: ArrayBuffer;
 
@@ -82,6 +78,8 @@ class WithPaddingRecordIterable implements RecordIterable {
   private readonly extraPadding: number;
 
   constructor(data: ArrayBuffer, rs: number, extraPadding = 0) {
+    super();
+
     this.rs = rs - TAG_LENGTH;
 
     // At least on byte of data must be present in each record
@@ -101,7 +99,7 @@ class WithPaddingRecordIterable implements RecordIterable {
     // Number of record
     this.length = Math.ceil(data.byteLength / this.ds);
     const lastRecordSize = data.byteLength - this.length * this.ds;
-    if (lastRecordSize <= extraPadding) this.length--;
+    if (lastRecordSize <= extraPadding && this.length > 1) this.length--;
 
     this.data = data;
   }
@@ -115,9 +113,9 @@ class WithPaddingRecordIterable implements RecordIterable {
       next: (
         ..._args: [] | [undefined]
       ): IteratorResult<PlainTextRecord, PlainTextRecord> => {
-        if (done) return { done: true, value: record };
-
+        if (done) return { done, value: record };
         done = cursor + this.rs >= this.data.byteLength;
+
         const recordData = this.data.slice(
           cursor,
           done ? undefined : cursor + this.ds,
@@ -216,5 +214,5 @@ export async function decrypt(
     resultCursor += decryptedRecord.byteLength;
   }
 
-  return result;
+  return result.slice(0, resultCursor);
 }
