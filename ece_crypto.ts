@@ -1,4 +1,3 @@
-import { crypto } from "https://deno.land/std@0.150.0/crypto/mod.ts";
 import { Header, HeaderOptions } from "./header.ts";
 import { CEK_INFO, KEY_LENGTH, NONCE_INFO, NONCE_LENGTH } from "./const.ts";
 

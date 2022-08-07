@@ -4,9 +4,8 @@ import {
   assertFalse,
   assertNotEquals,
   assertThrows,
-} from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import * as bytes from "https://deno.land/std@0.150.0/bytes/mod.ts";
-import * as b64url from "https://deno.land/std@0.150.0/encoding/base64url.ts";
+} from "./dev_deps.ts";
+import { base64url, bytes } from "./deps.ts";
 
 import { DEFAULT_RECORD_SIZE, SALT_LENGTH } from "./const.ts";
 import { Header, RecordSizeError } from "./header.ts";
@@ -55,7 +54,7 @@ Deno.test("Header/not/equal", () => {
 });
 
 Deno.test("Header/toBytes", () => {
-  const innerSalt = b64url.decode("I1BsxtFttlv3u_Oo94xnmw");
+  const innerSalt = base64url.decode("I1BsxtFttlv3u_Oo94xnmw");
   const salt = new Salt(innerSalt);
   const h = new Header({ salt, rs: 4096, keyid: new Uint8Array() });
 
@@ -70,7 +69,7 @@ Deno.test("Header/toBytes", () => {
 });
 
 Deno.test("Header/toBase64", () => {
-  const innerSalt = b64url.decode("I1BsxtFttlv3u_Oo94xnmw");
+  const innerSalt = base64url.decode("I1BsxtFttlv3u_Oo94xnmw");
   const salt = new Salt(innerSalt);
   const h = new Header({ salt, rs: 4096, keyid: new Uint8Array() });
 
@@ -78,7 +77,7 @@ Deno.test("Header/toBase64", () => {
 });
 
 Deno.test("Header/toBase64Url", () => {
-  const innerSalt = b64url.decode("I1BsxtFttlv3u_Oo94xnmw");
+  const innerSalt = base64url.decode("I1BsxtFttlv3u_Oo94xnmw");
   const salt = new Salt(innerSalt);
   const h = new Header({ salt, rs: 4096, keyid: new Uint8Array() });
 
@@ -86,7 +85,7 @@ Deno.test("Header/toBase64Url", () => {
 });
 
 Deno.test("Header/fromBytes", () => {
-  const innerSalt = b64url.decode("I1BsxtFttlv3u_Oo94xnmw");
+  const innerSalt = base64url.decode("I1BsxtFttlv3u_Oo94xnmw");
   const salt = new Salt(innerSalt);
   const h1 = new Header({ salt, rs: 4096, keyid: new Uint8Array() });
 
@@ -96,7 +95,7 @@ Deno.test("Header/fromBytes", () => {
 });
 
 Deno.test("Header/fromBase64", () => {
-  const innerSalt = b64url.decode("I1BsxtFttlv3u_Oo94xnmw");
+  const innerSalt = base64url.decode("I1BsxtFttlv3u_Oo94xnmw");
   const salt = new Salt(innerSalt);
   const h1 = new Header({ salt, rs: 4096, keyid: new Uint8Array() });
 
@@ -106,7 +105,7 @@ Deno.test("Header/fromBase64", () => {
 });
 
 Deno.test("Header/fromBase64Url", () => {
-  const innerSalt = b64url.decode("I1BsxtFttlv3u_Oo94xnmw");
+  const innerSalt = base64url.decode("I1BsxtFttlv3u_Oo94xnmw");
   const salt = new Salt(innerSalt);
   const h1 = new Header({ salt, rs: 4096, keyid: new Uint8Array() });
 

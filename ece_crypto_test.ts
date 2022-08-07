@@ -1,7 +1,6 @@
-import * as base64url from "https://deno.land/std@0.150.0/encoding/base64url.ts";
-import { equals } from "https://deno.land/std@0.150.0/bytes/equals.ts";
-import { concat } from "https://deno.land/std@0.150.0/bytes/mod.ts";
-import { assert } from "https://deno.land/std@0.150.0/testing/asserts.ts";
+import { assert } from "./dev_deps.ts";
+import { base64url, bytes } from "./deps.ts";
+
 import { ECECrypto } from "./ece_crypto.ts";
 import { Header } from "./header.ts";
 
@@ -16,12 +15,12 @@ Deno.test("ECECrypto/encryptRecord/RFC8188/Example1", async () => {
   const crypto = new ECECrypto(secret, { header });
 
   const record = await crypto.encryptRecord(
-    concat(input, Uint8Array.of(0x02)), // add padding
+    bytes.concat(input, Uint8Array.of(0x02)), // add padding
     0,
   );
 
   assert(
-    equals(
+    bytes.equals(
       new Uint8Array(record),
       base64url.decode("-NAVub2qFgBEuQKRapoZu-IxkIva3MEB1PD-ly8Thjg"),
     ),
@@ -38,22 +37,22 @@ Deno.test("ECECrypto/encryptRecord/RFC8188/Example2", async () => {
   const crypto = new ECECrypto(secret, { header });
 
   const firstRecord = await crypto.encryptRecord(
-    concat(input.slice(0, 7), Uint8Array.of(0x01, 0x0)),
+    bytes.concat(input.slice(0, 7), Uint8Array.of(0x01, 0x0)),
     0,
   );
 
   const secondRecord = await crypto.encryptRecord(
-    concat(input.slice(7), Uint8Array.of(0x02)),
+    bytes.concat(input.slice(7), Uint8Array.of(0x02)),
     1,
   );
 
-  const result = concat(
+  const result = bytes.concat(
     new Uint8Array(firstRecord),
     new Uint8Array(secondRecord),
   );
 
   assert(
-    equals(
+    bytes.equals(
       result,
       base64url.decode(
         "zhvHIc_4J74DqnRmKL8co7qkciRYxA8qBdRb5I-oUD3TxyOdThFChKYM90rC1iKkv7g",
@@ -78,7 +77,7 @@ Deno.test("ECECrypto/decryptRecord/RFC8188/Example1", async () => {
   );
 
   assert(
-    equals(
+    bytes.equals(
       new Uint8Array(record),
       base64url.decode("SSBhbSB0aGUgd2FscnVzAg"),
     ),
@@ -105,13 +104,13 @@ Deno.test("ECECrypto/decryptRecord/RFC8188/Example2", async () => {
     1,
   );
 
-  const result = concat(
+  const result = bytes.concat(
     new Uint8Array(firstRecord),
     new Uint8Array(secondRecord),
   );
 
   assert(
-    equals(
+    bytes.equals(
       result,
       base64url.decode(
         "SSBhbSB0aAEAZSB3YWxydXMC",

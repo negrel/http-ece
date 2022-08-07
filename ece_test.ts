@@ -1,6 +1,5 @@
-import * as base64url from "https://deno.land/std@0.150.0/encoding/base64url.ts";
-import { equals } from "https://deno.land/std@0.150.0/bytes/equals.ts";
-import { assert } from "https://deno.land/std@0.150.0/testing/asserts.ts";
+import { assert } from "./dev_deps.ts";
+import { base64url, bytes } from "./deps.ts";
 
 import { decrypt, encrypt } from "./ece.ts";
 import { Header } from "./header.ts";
@@ -14,7 +13,7 @@ Deno.test("encrypt/RFC8188/Example1", async () => {
   const result = await encrypt(input, secret, { header });
 
   assert(
-    equals(
+    bytes.equals(
       new Uint8Array(result),
       base64url.decode(
         "I1BsxtFttlv3u_Oo94xnmwAAEAAA-NAVub2qFgBEuQKRapoZu-IxkIva3MEB1PD-ly8Thjg",
@@ -32,7 +31,7 @@ Deno.test("encrypt/RFC8188/Example2", async () => {
   const result = await encrypt(recordIterable, secret, { header });
 
   assert(
-    equals(
+    bytes.equals(
       new Uint8Array(result),
       base64url.decode(
         "uNCkWiNYzKTnBN9ji3-qWAAAABkCYTHOG8chz_gnvgOqdGYovxyjuqRyJFjEDyoF1Fvkj6hQPdPHI51OEUKEpgz3SsLWIqS_uA",
@@ -50,7 +49,7 @@ Deno.test("decrypt/RFC8188/Example1", async () => {
   const result = await decrypt(input.buffer, secret);
 
   assert(
-    equals(
+    bytes.equals(
       new Uint8Array(result),
       base64url.decode(
         "SSBhbSB0aGUgd2FscnVz",
@@ -68,7 +67,7 @@ Deno.test("decrypt/RFC8188/Example2", async () => {
   const result = await decrypt(input.buffer, secret);
 
   assert(
-    equals(
+    bytes.equals(
       new Uint8Array(result),
       base64url.decode(
         "SSBhbSB0aGUgd2FscnVz",

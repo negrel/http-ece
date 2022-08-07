@@ -1,8 +1,5 @@
-import {
-  assert,
-  assertFalse,
-  assertThrows,
-} from "https://deno.land/std@0.150.0/testing/asserts.ts";
+import { bytes } from "./deps.ts";
+import { assert, assertFalse, assertThrows } from "./dev_deps.ts";
 import { SALT_LENGTH } from "./const.ts";
 import { Salt, SaltLengthError } from "./salt.ts";
 
@@ -11,9 +8,7 @@ Deno.test("Salt/constructor/default", () => {
   assert(salt.length === SALT_LENGTH);
 
   const other = new Salt();
-  for (let i = 0; i < SALT_LENGTH; i++) {
-    assert(salt[i] != other[i]);
-  }
+  assertFalse(bytes.equals(salt, other));
 });
 
 Deno.test("Salt/constructor/Uint8Array", () => {

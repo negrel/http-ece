@@ -1,6 +1,5 @@
-import * as b64url from "https://deno.land/std@0.150.0/encoding/base64url.ts";
-import * as b64 from "https://deno.land/std@0.150.0/encoding/base64.ts";
-import * as bytes from "https://deno.land/std@0.150.0/bytes/equals.ts";
+import { base64, base64url, bytes } from "./deps.ts";
+
 import {
   DEFAULT_RECORD_SIZE,
   HEADER_LENGTH_MIN,
@@ -75,11 +74,11 @@ export class Header {
   }
 
   public static fromBase64(b: string): Header {
-    return Header.fromBytes(b64.decode(b).buffer);
+    return Header.fromBytes(base64.decode(b).buffer);
   }
 
   public static fromBase64Url(b: string): Header {
-    return Header.fromBytes(b64url.decode(b).buffer);
+    return Header.fromBytes(base64url.decode(b).buffer);
   }
 
   public toBytes(): ArrayBuffer {
@@ -95,11 +94,11 @@ export class Header {
   }
 
   public toBase64(): string {
-    return b64.encode(this.toBytes());
+    return base64.encode(this.toBytes());
   }
 
   public toBase64Url(): string {
-    return b64url.encode(this.toBytes());
+    return base64url.encode(this.toBytes());
   }
 
   public equals(other: Header): boolean {

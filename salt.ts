@@ -1,4 +1,4 @@
-import * as bytes from "https://deno.land/std@0.150.0/bytes/mod.ts";
+import { bytes } from "./deps.ts";
 
 import { SALT_LENGTH } from "./const.ts";
 
