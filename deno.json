@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "strict": true
+  },
+  "lint": {
+    "files": {
+      "include": ["."],
+      "exclude": ["dist/"]
+    },
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "include": ["."],
+      "exclude": ["dist/"]
+    },
+    "options": {
+      "indentWidth": 2
+    }
+  }
+}
