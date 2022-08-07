@@ -11,6 +11,21 @@ the legacy scheme from earlier drafts.
 It does not support, and we have no plans to ever support, the obsoletes
 `aesgmc` and `aesgcm128` schemes from earlier drafts.
 
+## Usage
+
+```ts
+import * as ece from "https://deno.land/x/http_ece@v0.0.0/mod.ts"; // mod.js bundle also exist
+
+const input = new TextEncoder().encode("I am the walrus");
+const secret = new TextEncoder().encode("my_secret");
+const encrypted = await ece.encrypt(input, secret);
+
+const decrypted = await ece.decrypt(encrypted, secret);
+
+console.log(new TextDecoder().decode(decrypted));
+// output: I am the walrus
+```
+
 ## :stars: Show your support
 
 Please give a :star: if this project helped you!
