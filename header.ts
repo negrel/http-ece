@@ -12,7 +12,7 @@ import {
 import { Salt } from "./salt.ts";
 
 export interface HeaderOptions {
-  salt?: Salt;
+  salt?: Salt | Uint8Array | ArrayBuffer;
   rs?: number;
   keyid?: Uint8Array;
 }
@@ -41,7 +41,7 @@ export class Header {
       throw new RecordSizeError(rs);
     }
 
-    this.salt = salt;
+    this.salt = salt instanceof Salt ? salt : new Salt(salt);
     this.rs = rs;
     this.keyid = keyid;
   }
