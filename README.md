@@ -17,7 +17,7 @@ It does not support, and we have no plans to ever support, the obsoletes
 ## Usage
 
 ```ts
-import * as ece from "https://deno.land/x/http_ece@v0.0.1/mod.ts";
+import * as ece from "https://deno.land/x/http_ece@v0.0.2/mod.ts";
 
 const input = new TextEncoder().encode("I am the walrus");
 const secret = new TextEncoder().encode("my_secret");
