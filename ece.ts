@@ -180,7 +180,7 @@ export function unpad(record: ArrayBuffer): ArrayBuffer {
 /**
  * @param data is the encrypted data with the header block
  * @param secret is the secret used to encrypt the data
- * @param headerOrOptions an optional header if not part of data, or options object 
+ * @param headerOrOptions an optional header if not part of data, or options object
  * @returns the decrypted data
  */
 export async function decrypt(
