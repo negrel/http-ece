@@ -180,16 +180,32 @@ export function unpad(record: ArrayBuffer): ArrayBuffer {
 /**
  * @param data is the encrypted data with the header block
  * @param secret is the secret used to encrypt the data
- * @param header an optional header if not part of data.
+ * @param headerOrOptions an optional header if not part of data, or options object 
  * @returns the decrypted data
  */
 export async function decrypt(
   data: ArrayBuffer,
   secret: ArrayBuffer,
-  header?: Header,
+  headerOrOptions?: Header | ECECryptoOptions,
 ): Promise<ArrayBuffer> {
-  if (header === undefined) header = Header.fromBytes(data);
-  const crypto = new ECECrypto(secret, { header });
+  let options: ECECryptoOptions;
+  let header: Header;
+  if (headerOrOptions instanceof Header) {
+    header = headerOrOptions;
+    options = { header: headerOrOptions };
+  } else if (headerOrOptions) {
+    if (headerOrOptions.header instanceof Header) {
+      header = headerOrOptions.header;
+    } else {
+      header = new Header(headerOrOptions.header || {});
+    }
+    options = { ...headerOrOptions, header };
+  } else {
+    header = Header.fromBytes(data);
+    options = { header };
+  }
+
+  const crypto = new ECECrypto(secret, options);
   data = data.slice(header.byteLength);
 
   const recordsNum = data.byteLength / header.rs;
