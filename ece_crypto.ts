@@ -4,6 +4,7 @@ import { CEK_INFO, KEY_LENGTH, NONCE_INFO, NONCE_LENGTH } from "./const.ts";
 export interface ECECryptoOptions {
   header?: Header | HeaderOptions;
   info?: Uint8Array;
+  nonceInfo?: Uint8Array;
   subtleCrypto?: SubtleCrypto;
 }
 
@@ -15,6 +16,7 @@ export interface ECECryptoOptions {
  */
 export class ECECrypto {
   public readonly info: Uint8Array;
+  public readonly nonceInfo: Uint8Array;
   public readonly header: Header;
   public readonly crypto: SubtleCrypto;
 
@@ -35,6 +37,7 @@ export class ECECrypto {
     {
       header = new Header({}),
       info = CEK_INFO,
+      nonceInfo = NONCE_INFO,
       subtleCrypto = crypto.subtle,
     }: ECECryptoOptions,
   ) {
@@ -42,6 +45,7 @@ export class ECECrypto {
     this.info = info;
     this.header = header instanceof Header ? header : new Header(header);
     this.crypto = subtleCrypto;
+    this.nonceInfo = nonceInfo;
   }
 
   protected async getPRK(): Promise<ArrayBuffer> {
@@ -80,7 +84,7 @@ export class ECECrypto {
     if (this.nonce === null) {
       this.nonce = await this.hmacSha256(
         await this.getPRK(),
-        NONCE_INFO,
+        this.nonceInfo,
         NONCE_LENGTH,
       );
     }
