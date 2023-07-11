@@ -189,23 +189,14 @@ export async function decrypt(
   headerOrOptions?: Header | ECECryptoOptions,
 ): Promise<ArrayBuffer> {
   let options: ECECryptoOptions;
-  let header: Header;
   if (headerOrOptions instanceof Header) {
-    header = headerOrOptions;
     options = { header: headerOrOptions };
-  } else if (headerOrOptions) {
-    if (headerOrOptions.header instanceof Header) {
-      header = headerOrOptions.header;
-    } else {
-      header = new Header(headerOrOptions.header || {});
-    }
-    options = { ...headerOrOptions, header };
   } else {
-    header = Header.fromBytes(data);
-    options = { header };
+    options = headerOrOptions || {};
   }
 
   const crypto = new ECECrypto(secret, options);
+  const header = crypto.header;
   data = data.slice(header.byteLength);
 
   const recordsNum = data.byteLength / header.rs;
