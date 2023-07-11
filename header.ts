@@ -102,9 +102,9 @@ export class Header {
   }
 
   public equals(other: Header): boolean {
-    return bytes.equalsNaive(this.salt, other.salt) &&
+    return bytes.equals(this.salt, other.salt) &&
       this.rs === other.rs &&
-      bytes.equalsNaive(this.keyid, other.keyid);
+      bytes.equals(this.keyid, other.keyid);
   }
 }
 
