@@ -195,6 +195,8 @@ export async function decrypt(
     options = headerOrOptions || {};
   }
 
+  options.header ||= Header.fromBytes(data);
+
   const crypto = new ECECrypto(secret, options);
   const header = crypto.header;
   data = data.slice(header.byteLength);
