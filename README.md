@@ -29,6 +29,8 @@ console.log(new TextDecoder().decode(decrypted));
 // output: I am the walrus
 ```
 
+or this is available on NPM as `TODO` for use in browsers.
+
 ## Features
 
 - `aes128gcm` encryption and decryption
