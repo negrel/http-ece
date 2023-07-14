@@ -29,6 +29,8 @@ console.log(new TextDecoder().decode(decrypted));
 // output: I am the walrus
 ```
 
+Package is also available as `@negrel/http_ece` on NPM.
+
 ## Features
 
 - `aes128gcm` encryption and decryption
