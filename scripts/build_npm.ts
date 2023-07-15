@@ -1,7 +1,7 @@
 import { build, emptyDir } from "https://deno.land/x/dnt@0.37.0/mod.ts";
 
 const version = Deno.args[0];
-if (!version) throw new Error('Missing version');
+if (!version) throw new Error("Missing version");
 
 await emptyDir("./npm");
 
@@ -16,7 +16,8 @@ await build({
   package: {
     name: "http_ece",
     version,
-    description: "An implementation of HTTP Encrypted Content-Encoding scheme (RFC 8188).",
+    description:
+      "An implementation of HTTP Encrypted Content-Encoding scheme (RFC 8188).",
     license: "MIT",
     repository: {
       type: "git",
