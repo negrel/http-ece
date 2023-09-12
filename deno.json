@@ -4,14 +4,13 @@
     "strict": true
   },
   "lint": {
-    "files": {
-      "include": [
-        "."
-      ],
-      "exclude": [
-        "dist/"
-      ]
-    },
+    "include": [
+      "."
+    ],
+    "exclude": [
+      "dist/",
+      "npm/"
+    ],
     "rules": {
       "tags": [
         "recommended"
@@ -19,16 +18,13 @@
     }
   },
   "fmt": {
-    "files": {
-      "include": [
-        "."
-      ],
-      "exclude": [
-        "dist/"
-      ]
-    },
-    "options": {
-      "indentWidth": 2
-    }
+    "include": [
+      "."
+    ],
+    "exclude": [
+      "dist/",
+      "npm/"
+    ],
+    "indentWidth": 2
   }
 }
