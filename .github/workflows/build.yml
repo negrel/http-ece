@@ -46,8 +46,8 @@ jobs:
 
       - name: Publish to NPM
         if: steps.extract_tag.outputs.result
-        working-directory: npm
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TAG: ${{ steps.extract_tag.outputs.result }}
-        run: nix develop --command npm publish --provenance
+        run: |
+          nix develop --command npm config set //registry.npmjs.org/:_authToken "${{ secrets.NPM_TOKEN }}"
+          nix develop --command npm publish npm/ --provenance --access public
