@@ -2,8 +2,14 @@ import { bytes } from "./deps.ts";
 
 import { SALT_LENGTH } from "./const.ts";
 
+/**
+ * SaltLengthError is thrown when salt length is of the wrong size.
+ */
 export class SaltLengthError extends Error {}
 
+/**
+ * Salt define crypto salt used for HTTP Encryption Coding.
+ */
 export class Salt extends Uint8Array {
   constructor(salt?: Uint8Array | ArrayBuffer) {
     if (salt === undefined) {

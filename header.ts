@@ -17,12 +17,18 @@ import {
 } from "./const.ts";
 import { Salt } from "./salt.ts";
 
+/**
+ * Options for Header class.
+ */
 export interface HeaderOptions {
   salt?: Salt | Uint8Array | ArrayBuffer;
   rs?: number;
   keyid?: Uint8Array;
 }
 
+/**
+ * Header define Encryption Content-Coding Header (https://www.rfc-editor.org/rfc/rfc8188#section-2.1)
+ */
 export class Header {
   public readonly salt: Salt;
   public readonly rs: number;
@@ -114,6 +120,10 @@ export class Header {
   }
 }
 
+/**
+ * RecordSizeError is thrown when record size exceed maximum size of is less than
+ * minimum record size.
+ */
 export class RecordSizeError extends Error {
   constructor(rs: number) {
     super(
@@ -122,6 +132,10 @@ export class RecordSizeError extends Error {
   }
 }
 
+/**
+ * HeaderSizeError is thrown when encryption content-coding header is less than
+ * minimum header size.
+ */
 export class HeaderSizeError extends Error {
   constructor(bytes: ArrayBuffer) {
     super(

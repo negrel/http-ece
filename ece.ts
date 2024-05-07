@@ -3,10 +3,11 @@ import { Header } from "./header.ts";
 import { ECECrypto, ECECryptoOptions } from "./ece_crypto.ts";
 
 /**
+ * Encrypt data using aes128gcm HTTP Content Coding.
  * @param data is the buffer to encrypt or a RecordIterable.
  * @param secret is the encryption secret
  * @param options
- * @returns encrypted data
+ * @returns encrypted data ArrayBuffer
  */
 export async function encrypt(
   data: RecordIterable | ArrayBuffer,
@@ -60,6 +61,9 @@ export interface RecordIterable {
   readonly length: number;
 }
 
+/**
+ * Abstract RecordIterable class that implements RecordIterable (interface).
+ */
 export abstract class RecordIterable implements RecordIterable {}
 
 /**
@@ -120,7 +124,7 @@ export class WithPaddingRecordIterable extends RecordIterable {
           cursor,
           done ? undefined : cursor + this.ds,
         );
-        record = pad(
+        record = padRecord(
           new Uint8Array(recordData),
           done ? 0 : this.extraPadding,
           done ? 0x02 : 0x01,
@@ -133,37 +137,49 @@ export class WithPaddingRecordIterable extends RecordIterable {
   }
 }
 
+/**
+ * InvalidDataSizeError is thrown when data to encrypt exceed maximum data size.
+ */
 export class InvalidDataSizeError extends Error {
   constructor(maxDataSize: number, data: ArrayBuffer) {
     super(`data size must be less than ${maxDataSize}: got ${data.byteLength}`);
   }
 }
 
+/**
+ * Record padding delimiter.
+ */
 export type PadDelimiter = 0x01 | 0x02;
 
-/** Add padding to an ArrayBuffer
- * @param data the buffer without padding
+/**
+ * Create a copy of record's ArrayBuffer with specified padding and padding delimiter.
+ * @param record is a record buffer without padding
  * @param padLen length of padding without delimiter
  * @param padDelimiter the padding delimiter
  * @returns an ArrayBuffer with padding.
  */
-export function pad(
-  data: ArrayBuffer,
+export function padRecord(
+  record: ArrayBuffer,
   padLen: number,
   padDelimiter: PadDelimiter,
 ): ArrayBuffer {
-  const result = new ArrayBuffer(data.byteLength + padLen + 1);
+  const result = new ArrayBuffer(record.byteLength + padLen + 1);
   const bytesArr = new Uint8Array(result);
   // Copy data into result
-  bytesArr.set(new Uint8Array(data), 0);
+  bytesArr.set(new Uint8Array(record), 0);
   // Then add padding
-  bytesArr.set(new Uint8Array(padLen), data.byteLength);
+  bytesArr.set(new Uint8Array(padLen), record.byteLength);
   // Then set delimiter octet
-  bytesArr[data.byteLength] = padDelimiter;
+  bytesArr[record.byteLength] = padDelimiter;
   return result;
 }
 
-export function unpad(record: ArrayBuffer): ArrayBuffer {
+/**
+ * Slice a record to remove its padding.
+ * @param record is the record buffer with padding
+ * @returns a slice of record without padding.
+ */
+export function unpadRecord(record: ArrayBuffer): ArrayBuffer {
   const r = new Uint8Array(record);
 
   for (let i = record.byteLength - 1; i >= 0; i--) {
@@ -178,6 +194,7 @@ export function unpad(record: ArrayBuffer): ArrayBuffer {
 }
 
 /**
+ * Decrypt data that was encrypted using aes128gcm HTTP Content Coding.
  * @param data is the encrypted data with the header block
  * @param secret is the secret used to encrypt the data
  * @param headerOrOptions an optional header if not part of data, or options object
@@ -205,12 +222,12 @@ export async function decrypt(
 
   let resultCursor = 0;
   const result = new Uint8Array(
-    (recordsNum) * (header.rs - TAG_LENGTH),
+    recordsNum * (header.rs - TAG_LENGTH),
   );
 
   let cursor = 0;
   for (let i = 0; i < recordsNum; i++) {
-    const decryptedRecord = unpad(
+    const decryptedRecord = unpadRecord(
       await crypto.decryptRecord(
         data.slice(cursor, cursor + header.rs),
         i,

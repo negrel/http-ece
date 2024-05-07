@@ -6,8 +6,11 @@ import {
   NONCE_LENGTH,
   ONE_BYTE,
 } from "./const.ts";
-import { bytes, encodeBase64Url } from "./deps.ts";
+import { bytes } from "./deps.ts";
 
+/**
+ * Options for ECECrypto.
+ */
 export interface ECECryptoOptions {
   header?: Header | HeaderOptions;
   info?: Uint8Array;
@@ -19,7 +22,7 @@ export interface ECECryptoOptions {
  * ECECrypto define an helper class that handle the
  * encryption and decryption of records one by one.
  * This class is stateless and is used as a building
- * block for ECE & ECEStream classes.
+ * block for encrypt & decrypt function.
  */
 export class ECECrypto {
   public readonly info: Uint8Array;
