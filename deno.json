@@ -1,6 +1,6 @@
 {
   "name": "@negrel/http-ece",
-  "version": "0.2.0",
+  "version": "0.3.0-beta02",
   "exports": "./mod.ts",
   "compilerOptions": {
     "allowJs": false,
@@ -32,7 +32,9 @@
   },
   "publish": {
     "include": [
-      "*.ts"
+      "*.ts",
+      "deno.lock",
+      "deno.json"
     ],
     "exclude": [
       "*_test.ts"
