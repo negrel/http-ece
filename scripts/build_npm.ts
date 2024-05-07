@@ -1,4 +1,4 @@
-import { build, emptyDir } from "https://deno.land/x/dnt@0.38.0/mod.ts";
+import { build, emptyDir } from "@deno/dnt";
 
 const version = Deno.args[0];
 if (!version) throw new Error("Missing version");

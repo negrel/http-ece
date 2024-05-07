@@ -12,7 +12,11 @@ export const DEFAULT_RECORD_SIZE = 1024 * 64;
 export const RECORD_SIZE_MIN = 18;
 export const RECORD_SIZE_MAX = 2 ** 36 - 31;
 
-export const encoder = new TextEncoder();
-export const CEK_INFO = encoder.encode("Content-Encoding: aes128gcm\0");
-export const NONCE_INFO = encoder.encode("Content-Encoding: nonce\0");
-export const ONE_BYTE = encoder.encode("\x01");
+export const encoder: TextEncoder = new TextEncoder();
+export const CEK_INFO: Uint8Array = encoder.encode(
+  "Content-Encoding: aes128gcm\0",
+);
+export const NONCE_INFO: Uint8Array = encoder.encode(
+  "Content-Encoding: nonce\0",
+);
+export const ONE_BYTE: Uint8Array = encoder.encode("\x01");
