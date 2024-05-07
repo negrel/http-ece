@@ -1,4 +1,10 @@
-import { base64, base64url, bytes } from "./deps.ts";
+import {
+  bytes,
+  decodeBase64,
+  decodeBase64Url,
+  encodeBase64,
+  encodeBase64Url,
+} from "./deps.ts";
 
 import {
   DEFAULT_RECORD_SIZE,
@@ -74,11 +80,11 @@ export class Header {
   }
 
   public static fromBase64(b: string): Header {
-    return Header.fromBytes(base64.decode(b).buffer);
+    return Header.fromBytes(decodeBase64(b).buffer);
   }
 
   public static fromBase64Url(b: string): Header {
-    return Header.fromBytes(base64url.decode(b).buffer);
+    return Header.fromBytes(decodeBase64Url(b).buffer);
   }
 
   public toBytes(): ArrayBuffer {
@@ -94,11 +100,11 @@ export class Header {
   }
 
   public toBase64(): string {
-    return base64.encode(this.toBytes());
+    return encodeBase64(this.toBytes());
   }
 
   public toBase64Url(): string {
-    return base64url.encode(this.toBytes());
+    return encodeBase64Url(this.toBytes());
   }
 
   public equals(other: Header): boolean {

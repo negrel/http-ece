@@ -1,5 +1,5 @@
 import { assert } from "./dev_deps.ts";
-import { base64url, bytes } from "./deps.ts";
+import { bytes, decodeBase64Url } from "./deps.ts";
 
 import { decrypt, encrypt } from "./ece.ts";
 import { Header } from "./header.ts";
@@ -8,14 +8,14 @@ import { WithPaddingRecordIterable } from "./mod.ts";
 Deno.test("encrypt/RFC8188/Example1", async () => {
   const input = new TextEncoder().encode("I am the walrus");
   const header = Header.fromBase64Url("I1BsxtFttlv3u_Oo94xnmwAAEAAA");
-  const secret = base64url.decode("yqdlZ-tYemfogSmv7Ws5PQ");
+  const secret = decodeBase64Url("yqdlZ-tYemfogSmv7Ws5PQ");
 
   const result = await encrypt(input, secret, { header });
 
   assert(
     bytes.equals(
       new Uint8Array(result),
-      base64url.decode(
+      decodeBase64Url(
         "I1BsxtFttlv3u_Oo94xnmwAAEAAA-NAVub2qFgBEuQKRapoZu-IxkIva3MEB1PD-ly8Thjg",
       ),
     ),
@@ -25,7 +25,7 @@ Deno.test("encrypt/RFC8188/Example1", async () => {
 Deno.test("encrypt/RFC8188/Example2", async () => {
   const input = new TextEncoder().encode("I am the walrus");
   const header = Header.fromBase64Url("uNCkWiNYzKTnBN9ji3-qWAAAABkCYTE");
-  const secret = base64url.decode("BO3ZVPxUlnLORbVGMpbT1Q");
+  const secret = decodeBase64Url("BO3ZVPxUlnLORbVGMpbT1Q");
   const recordIterable = new WithPaddingRecordIterable(input, header.rs, 1);
 
   const result = await encrypt(recordIterable, secret, { header });
@@ -33,7 +33,7 @@ Deno.test("encrypt/RFC8188/Example2", async () => {
   assert(
     bytes.equals(
       new Uint8Array(result),
-      base64url.decode(
+      decodeBase64Url(
         "uNCkWiNYzKTnBN9ji3-qWAAAABkCYTHOG8chz_gnvgOqdGYovxyjuqRyJFjEDyoF1Fvkj6hQPdPHI51OEUKEpgz3SsLWIqS_uA",
       ),
     ),
@@ -41,17 +41,17 @@ Deno.test("encrypt/RFC8188/Example2", async () => {
 });
 
 Deno.test("decrypt/RFC8188/Example1", async () => {
-  const input = base64url.decode(
+  const input = decodeBase64Url(
     "I1BsxtFttlv3u_Oo94xnmwAAEAAA-NAVub2qFgBEuQKRapoZu-IxkIva3MEB1PD-ly8Thjg",
   );
-  const secret = base64url.decode("yqdlZ-tYemfogSmv7Ws5PQ");
+  const secret = decodeBase64Url("yqdlZ-tYemfogSmv7Ws5PQ");
 
   const result = await decrypt(input.buffer, secret);
 
   assert(
     bytes.equals(
       new Uint8Array(result),
-      base64url.decode(
+      decodeBase64Url(
         "SSBhbSB0aGUgd2FscnVz",
       ),
     ),
@@ -59,17 +59,17 @@ Deno.test("decrypt/RFC8188/Example1", async () => {
 });
 
 Deno.test("decrypt/RFC8188/Example2", async () => {
-  const input = base64url.decode(
+  const input = decodeBase64Url(
     "uNCkWiNYzKTnBN9ji3-qWAAAABkCYTHOG8chz_gnvgOqdGYovxyjuqRyJFjEDyoF1Fvkj6hQPdPHI51OEUKEpgz3SsLWIqS_uA",
   );
-  const secret = base64url.decode("BO3ZVPxUlnLORbVGMpbT1Q");
+  const secret = decodeBase64Url("BO3ZVPxUlnLORbVGMpbT1Q");
 
   const result = await decrypt(input.buffer, secret);
 
   assert(
     bytes.equals(
       new Uint8Array(result),
-      base64url.decode(
+      decodeBase64Url(
         "SSBhbSB0aGUgd2FscnVz",
       ),
     ),

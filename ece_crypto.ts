@@ -1,5 +1,12 @@
 import { Header, HeaderOptions } from "./header.ts";
-import { CEK_INFO, KEY_LENGTH, NONCE_INFO, NONCE_LENGTH } from "./const.ts";
+import {
+  CEK_INFO,
+  KEY_LENGTH,
+  NONCE_INFO,
+  NONCE_LENGTH,
+  ONE_BYTE,
+} from "./const.ts";
+import { bytes, encodeBase64Url } from "./deps.ts";
 
 export interface ECECryptoOptions {
   header?: Header | HeaderOptions;
@@ -42,10 +49,10 @@ export class ECECrypto {
     }: ECECryptoOptions,
   ) {
     this.ikm = ikm;
-    this.info = info;
+    this.info = bytes.concat([info, ONE_BYTE]);
     this.header = header instanceof Header ? header : new Header(header);
     this.crypto = subtleCrypto;
-    this.nonceInfo = nonceInfo;
+    this.nonceInfo = bytes.concat([nonceInfo, ONE_BYTE]);
   }
 
   protected async getPRK(): Promise<ArrayBuffer> {
