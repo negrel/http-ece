@@ -6,6 +6,11 @@
 This library is an implementation of HTTP Encrypted Content-Encoding
 scheme([RFC 8188](https://datatracker.ietf.org/doc/html/rfc8188)).
 
+> NOTE: This library hasn't been reviewed by crypto experts and may be unsecure.
+> I've done my best to follow RFC recommandation and I only used primitives
+> provided by the
+> [SubtleCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto).
+
 ## Implemented schemes
 
 This crate implements only the published Web Push Encryption scheme
@@ -17,7 +22,7 @@ It does not support, and we have no plans to ever support, the obsoletes
 ## Usage
 
 ```ts
-import * as ece from "https://deno.land/x/http_ece@v0.0.5/mod.ts";
+import * as ece from "https://deno.land/x/http_ece@v0.1.0/mod.ts";
 
 const input = new TextEncoder().encode("I am the walrus");
 const secret = new TextEncoder().encode("my_secret");
@@ -35,11 +40,12 @@ Package is also available as `@negrel/http_ece` on NPM.
 
 - `aes128gcm` encryption and decryption
 - custom padding strategy supported
-- Web browser compatible
+- Web browser compatible (based on
+  [SubtleCrypto](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto))
 
 ## TODO
 
-- [ ] Support the
+- [ ] Support
       [Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
 
 ## Contributing
