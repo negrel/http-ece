@@ -22,7 +22,7 @@ It does not support, and we have no plans to ever support, the obsoletes
 ## Usage
 
 ```ts
-import * as ece from "https://deno.land/x/http_ece@0.4.0/mod.ts";
+import * as ece from "jsr:@negrel/http-ece";
 
 const input = new TextEncoder().encode("I am the walrus");
 const secret = new TextEncoder().encode("my_secret");
@@ -33,9 +33,6 @@ const decrypted = await ece.decrypt(encrypted, secret);
 console.log(new TextDecoder().decode(decrypted));
 // output: I am the walrus
 ```
-
-Package is also available as
-[`@negrel/http-ece`](https://jsr.io/@negrel/http-ece) on JSR.
 
 ## Features
 
