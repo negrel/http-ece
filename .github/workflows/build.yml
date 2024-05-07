@@ -44,14 +44,3 @@ jobs:
 
       - name: Publish to JSR
         run: nix develop --command deno publish
-
-      - name: Prepare for NPM
-        run: nix develop --command make "npm/${{ steps.extract_tag.outputs.result || '0.0.0' }}"
-
-      - name: Publish to NPM
-        if: steps.extract_tag.outputs.result
-        env:
-          TAG: ${{ steps.extract_tag.outputs.result }}
-        run: |
-          nix develop --command npm config set //registry.npmjs.org/:_authToken "${{ secrets.NPM_TOKEN }}"
-          nix develop --command npm publish npm/ --provenance --access public
