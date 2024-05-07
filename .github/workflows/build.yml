@@ -16,6 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       id-token: write
 
     steps:
@@ -40,6 +41,9 @@ jobs:
 
       - name: Run Tests
         run: nix develop --command make test
+
+      - name: Publish to JSR
+        run: nix develop --command deno publish
 
       - name: Prepare for NPM
         run: nix develop --command make "npm/${{ steps.extract_tag.outputs.result || '0.0.0' }}"
