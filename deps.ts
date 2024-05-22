@@ -1,4 +1,7 @@
-export { decodeBase64Url, encodeBase64Url } from "@std/encoding/base64url";
-export { decodeBase64, encodeBase64 } from "@std/encoding/base64";
+export {
+  decodeBase64Url,
+  encodeBase64Url,
+} from "jsr:@std/encoding@0.224.0/base64url";
+export { decodeBase64, encodeBase64 } from "jsr:@std/encoding@0.224.0/base64";
 
-export * as bytes from "@std/bytes";
+export * as bytes from "jsr:@std/bytes@0.224.0";
