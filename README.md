@@ -1,7 +1,7 @@
 # `http_ece` - HTTP Encrypted Content-Encoding for Deno & web browsers
 
-![license MIT badge](https://img.shields.io/github/license/negrel/http_ece)
-![code size badge](https://img.shields.io/github/languages/code-size/negrel/http_ece)
+![license MIT badge](https://img.shields.io/github/license/negrel/http-ece)
+![code size badge](https://img.shields.io/github/languages/code-size/negrel/http-ece)
 
 This library is an implementation of HTTP Encrypted Content-Encoding
 scheme([RFC 8188](https://datatracker.ietf.org/doc/html/rfc8188)).
