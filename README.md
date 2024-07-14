@@ -1,5 +1,6 @@
-# `http_ece` - HTTP Encrypted Content-Encoding for Deno & web browsers
+# `http-ece` - HTTP Encrypted Content-Encoding for Deno & web browsers
 
+![jsr badge](https://jsr.io/badges/@negrel/http-ece)
 ![license MIT badge](https://img.shields.io/github/license/negrel/http-ece)
 ![code size badge](https://img.shields.io/github/languages/code-size/negrel/http-ece)
 
@@ -11,13 +12,15 @@ scheme([RFC 8188](https://datatracker.ietf.org/doc/html/rfc8188)).
 > provided by the
 > [SubtleCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto).
 
+`http-ece` is available on [JSR](https://jsr.io/@negrel/http-ece).
+
 ## Implemented schemes
 
 This crate implements only the published Web Push Encryption scheme
 (`aes128gcm`), and **not** the legacy scheme from earlier drafts.
 
-It does not support, and we have no plans to ever support, the obsoletes
-`aesgmc` and `aesgcm128` schemes from earlier drafts.
+It does not support, and we have no plans to ever support, the obsolete `aesgmc`
+and `aesgcm128` schemes from earlier drafts.
 
 ## Usage
 
