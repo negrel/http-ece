@@ -4,4 +4,4 @@ export {
   assertFalse,
   assertNotEquals,
   assertThrows,
-} from "jsr:@std/assert@0.224.0";
+} from "jsr:@std/assert@1";
