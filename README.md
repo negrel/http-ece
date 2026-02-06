@@ -16,7 +16,7 @@ scheme([RFC 8188](https://datatracker.ietf.org/doc/html/rfc8188)).
 
 ## Implemented schemes
 
-This crate implements only the published Web Push Encryption scheme
+This package implements only the published Web Push Encryption scheme
 (`aes128gcm`), and **not** the legacy scheme from earlier drafts.
 
 It does not support, and we have no plans to ever support, the obsolete `aesgmc`
